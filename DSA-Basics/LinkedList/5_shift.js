@@ -1,7 +1,7 @@
 /*
 
-Pop - Removes the last node from the linked list
-time complexity: O(n)
+Shift - Removes the first node from the linked list
+time complexity: O(1)
 
 */
 
@@ -18,7 +18,7 @@ class LinkedList{
         const newNode = new Node(value);
         this.head = newNode;
         this.tail = this.head;
-        this.length = 1;    
+        this.length = 1;
     }
 
     getHead(){
@@ -74,7 +74,7 @@ class LinkedList{
         let pre = this.head;
         while(temp.next){
             pre = temp;
-            temp = temp.next
+            temp = temp.next;
         }
         this.tail = pre;
         this.tail.next = null;
@@ -86,18 +86,46 @@ class LinkedList{
         return temp;
     }
 
+    unshift(value){
+        const newNode = new Node(value);
+        if(this.length === 0){
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            newNode.next = this.head;
+            this.head = newNode;
+        }
+        this.length++;
+        return this;
+    }
+
+    shift(){
+        if(this.length === 0) return null;
+        let temp = this.head;
+        this.head = this.head.next;
+        temp.next = null;
+        this.length--;
+        if(this.length === 0){
+            this.tail = null;
+        }
+        return temp;
+    }
 }
 
 
 let myLinkedList = new LinkedList(1);
 myLinkedList.push(2);
+myLinkedList.push(3);
 
-
-console.log("Before pop:");
+console.log("Before shift:");
 myLinkedList.printList();
 
-let poppedNode = myLinkedList.pop();
-console.log("Popped node value: " + poppedNode.value);
+let shiftedNode = myLinkedList.shift();
+console.log("Shifted node value: " + shiftedNode.value);
 
-console.log("After pop:");
+console.log("After shift:");
 myLinkedList.printList();
+
+myLinkedList.getHead();
+myLinkedList.getTail();
+myLinkedList.getLength();

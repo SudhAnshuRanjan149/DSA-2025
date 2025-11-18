@@ -1,7 +1,6 @@
 /*
 
 Push - Adds a new node at the end of the linked list
-
 time complexity: O(1)
 
 */
