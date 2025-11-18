@@ -1,3 +1,13 @@
+/*
+
+Pop - Removes the last node from the linked list
+
+time complexity: O(n)
+
+*/
+
+
+
 class Node{
     constructor(value){
         this.value = value;

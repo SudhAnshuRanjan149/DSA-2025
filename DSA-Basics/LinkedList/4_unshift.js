@@ -1,6 +1,6 @@
 /*
 
-Push - Adds a new node at the end of the linked list
+Unshift - Adds a new node at the beginning of the linked list
 
 time complexity: O(1)
 
@@ -19,15 +19,7 @@ class LinkedList{
         const newNode = new Node(value);
         this.head = newNode;
         this.tail = this.head;
-        this.length = 1;
-    }
-
-    printList(){
-        let temp = this.head;
-        while(temp !== null){
-            console.log(temp.value);
-            temp = temp.next;
-        }
+        this.length = 1;    
     }
 
     getHead(){
@@ -56,6 +48,14 @@ class LinkedList{
         this.length = 0;
     }
 
+    printList(){
+        let temp = this.head;
+        while(temp !== null){
+            console.log(temp.value);
+            temp = temp.next;
+        }
+    }
+
     push(value){
         const newNode = new Node(value);
         if(this.length === 0){
@@ -68,17 +68,53 @@ class LinkedList{
         this.length++;
         return this;
     }
+
+    pop(){
+        if(this.length === 0) return undefined;
+        let temp = this.head;
+        let pre = this.head;
+        while(temp.next){
+            pre = temp;
+            temp = temp.next
+        }
+        this.tail = pre;
+        this.tail.next = null;
+        this.length--;
+        if(this.length === 0){
+            this.head = null;
+            this.tail = null;
+        }
+        return temp;
+    }
+
+    unshift(value){
+        const newNode = new Node(value);
+        if(this.length === 0){
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            newNode.next = this.head;
+            this.head = newNode;
+        }
+        this.length++;
+        return this;
+    }
+
 }
 
 
 let myLinkedList = new LinkedList(1);
-myLinkedList.makeEmpty();
 myLinkedList.push(2);
-myLinkedList.push(3);
+
+
+console.log("Before unshift:");
+myLinkedList.printList();
+
+myLinkedList.unshift(0);
+
+console.log("After unshift:");
+myLinkedList.printList();
 
 myLinkedList.getHead();
 myLinkedList.getTail();
 myLinkedList.getLength();
-console.log("Linked List after pushing elements:");
-myLinkedList.printList();
-

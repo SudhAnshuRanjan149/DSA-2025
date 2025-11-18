@@ -1,3 +1,10 @@
+/*
+
+Constructor - Initializes a linked list with a single node
+
+*/
+
+
 class Node{
     constructor(value){
         this.value = value;
