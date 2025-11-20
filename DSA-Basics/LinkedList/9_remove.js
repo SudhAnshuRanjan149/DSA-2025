@@ -156,3 +156,26 @@ class LinkedList{
         return temp;
     }
 }
+
+let myLinkedList = new LinkedList();
+
+myLinkedList.push(1);
+myLinkedList.push(2);
+myLinkedList.push(3);
+myLinkedList.push(4);
+myLinkedList.push(5);
+
+console.log("Original List:");
+myLinkedList.printList();
+
+console.log("Removing index 2:");
+myLinkedList.remove(2);
+myLinkedList.printList();
+
+console.log("Removing index 0:");
+myLinkedList.remove(0);
+myLinkedList.printList();
+
+console.log("Removing last index:");
+myLinkedList.remove(myLinkedList.length - 1);
+myLinkedList.printList();

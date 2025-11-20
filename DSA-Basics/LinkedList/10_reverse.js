@@ -1,9 +1,10 @@
 /*
 
-Insert - Add a node at a specific index in a linked list
+Reverse - Reverses the order of the nodes in the linked list
 time complexity: O(n)
 
 */
+
 
 class Node{
     constructor(value){
@@ -142,17 +143,51 @@ class LinkedList{
         this.length++;
         return true;
     }
+
+    remove(index){
+        if(index < 0 || index >= this.length) return null;
+        if(index === 0) return this.shift();
+        if(index === this.length - 1) return this.pop();
+        const prev = this.get(index - 1);
+        const temp = prev.next;
+        prev.next = temp.next;
+        temp.next = null;
+        this.length--;
+        return temp;
+    }
+
+
+    reverse(){
+	    let temp = this.head;
+	    this.head = this.tail;
+	    this.tail = temp;
+	    
+	    let prev = null
+	    let next = null
+	    
+	    for(let i = 0; i < this.length; i++){
+	        next = temp.next;
+	        temp.next = prev;
+	        prev = temp;
+	        temp = next;
+	    }
+	    return this;
+	}
 }
 
-let myLinkedList = new LinkedList();
 
+let myLinkedList = new LinkedList();
 myLinkedList.push(1);
 myLinkedList.push(2);
+myLinkedList.push(3);
 myLinkedList.push(4);
-console.log("Before Insertion:");
+myLinkedList.push(5);
+
+console.log("Original List:");
 myLinkedList.printList();
 
-myLinkedList.insert(2, 3); // Inserting 3 at index 2
-console.log("After Insertion at index 2:");
+myLinkedList.reverse();
+
+console.log("Reversed List:");
 myLinkedList.printList();
 
