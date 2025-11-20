@@ -1,10 +1,9 @@
 /*
 
-Get - Retrieves a node by its position in the linked list
+Set - Updates the value of a node at a specific position in the linked list
 time complexity: O(n)
 
 */
-
 
 class Node{
     constructor(value){
@@ -19,7 +18,7 @@ class LinkedList{
         this.tail = null;
         this.length = 0;    
     }
-
+    
     getHead(){
         if(this.head === null){
             console.log("Head: null");
@@ -95,7 +94,7 @@ class LinkedList{
         }
         this.length++;
     }
-
+    
     shift(){
         if(this.length === 0) return null;
         let temp = this.head;
@@ -114,31 +113,31 @@ class LinkedList{
         for(let i = 0; i < index; i++){
             temp = temp.next;
         }
-        return temp;    
+        return temp;
+    }   
+
+    set(index, value){
+        let temp = this.get(index);
+        if(temp){
+            temp.value = value;
+            return true;
+        }
+        return false;
     }
-
 }
 
-
-
-let myLinkedList = new LinkedList();
-
-myLinkedList.push(1);
-myLinkedList.push(2);
-myLinkedList.push(3);
-myLinkedList.push(4);
-
-console.log("Get node at index 2:");
-
-let node = myLinkedList.get(2);
-
-if(node) {
-    console.log("Node found: " + node.value);
-} else {
-    console.log("Node not found");
-}
-
-console.log("Full list:");
-
+// Example usage:
+const myLinkedList = new LinkedList();
+myLinkedList.push(10);
+myLinkedList.push(20);
+myLinkedList.push(30);
+console.log("Before set:");
 myLinkedList.printList();
 
+myLinkedList.set(1, 25); // Update index 1 to value 25
+console.log("After set:");
+myLinkedList.printList();
+
+myLinkedList.set(5, 50); // Attempt to update invalid index
+console.log("After attempting to set invalid index:");
+myLinkedList.printList();
