@@ -48,8 +48,12 @@ class Stack {
 	/// WRITE PUSH METHOD HERE ///
 	push(value){
 	    let newNode = new Node(value);
-	    newNode.next = this.top;
-	    this.top = newNode;
+	    if(this.length === 0){
+	        this.top = newNode
+	    }else{
+	        newNode.next = this.top;
+	        this.top = newNode;
+	    }
 	    this.length++
 	}
      
