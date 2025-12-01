@@ -1,6 +1,5 @@
 /****************************************************************************************
  * LINKED LIST — COMPLETE NOTES (BEGINNER → ADVANCED)
- * Everything is inside this JavaScript code block with comments explaining every concept.
  ****************************************************************************************/
 
 

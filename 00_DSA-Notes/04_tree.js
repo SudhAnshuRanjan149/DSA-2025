@@ -22,7 +22,7 @@
    - Depth: distance from node → root
    - Subtree: any node + all its descendants
 
-   GENREAL PROPERTIES:
+   GENERAL PROPERTIES:
    - A tree with N nodes always has N−1 edges.
 -----------------------------------------------------------------------------------------*/
 
