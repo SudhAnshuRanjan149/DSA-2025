@@ -1,6 +1,5 @@
 /****************************************************************************************
  * TREE — COMPLETE NOTES (BEGINNER → ADVANCED)
- * Entire explanation is inside this JavaScript code block using comments only.
  ****************************************************************************************/
 
 
@@ -40,7 +39,7 @@
        - Left subtree contains values < node value
        - Right subtree contains values > node value
 
-   (C) **AVL Tree**
+   (C) **AVL Tree** - (Adelson-Velsky and Landis Tree)
        Self-balancing BST:
        |height(left) – height(right)| ≤ 1 for every node.
 

@@ -1,6 +1,5 @@
 /****************************************************************************************
  * STACK — COMPLETE NOTES (BEGINNER → ADVANCED)
- * Entire explanation is inside this JavaScript code block using comments only.
  ****************************************************************************************/
 
 
@@ -335,9 +334,3 @@ function dailyTemperatures(temps) {
  Queue       | FIFO   | BFS, scheduling, buffers
 
 ****************************************************************************************/
-
-
-/****************************************************************************************
- * END OF STACK NOTES
- * Ask for any other DSA topic (Queue, Graph, Tree, Heap, DP, Sorting, Trie, etc.)
- ****************************************************************************************/

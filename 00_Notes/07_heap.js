@@ -1,6 +1,5 @@
 /****************************************************************************************
  * HEAP — COMPLETE NOTES (BEGINNER → ADVANCED)
- * Entire explanation is inside this JavaScript code block using comments only.
  ****************************************************************************************/
 
 
@@ -361,10 +360,3 @@ function heapSortAsc(arr) {
 // BST           O(log n) O(log n) O(log n) O(log n)       Yes
 // Sorted array  O(n)     O(n)     O(log n) O(1 or n)      Yes
 // Unsorted arr  O(1)     O(n)     O(n)     O(n)           No
-
-
-
-/****************************************************************************************
- * END OF HEAP NOTES
- * Next topic? (Priority Queue, Graph patterns, AVL Tree, DP, Backtracking, etc.)
- ****************************************************************************************/

@@ -1,6 +1,5 @@
 /****************************************************************************************
  * ALL DATA STRUCTURES (BASIC → ADVANCED) WITH CRUD OPERATIONS
- * Listed cleanly using JavaScript comments only.
  ****************************************************************************************/
 
 
@@ -329,7 +328,6 @@
 
 /****************************************************************************************
  * END OF LIST OF ALL DATA STRUCTURES WITH CRUD METHODS
- * Want the next step? (Basics question list for each DS)
  ****************************************************************************************/
 
 
@@ -353,7 +351,6 @@
 /****************************************************************************************
  * IMPORTANT DSA PATTERNS (BEGINNER → ADVANCED)
  * Each pattern includes 3 MUST-DO LeetCode questions for practice.
- * Everything is inside JS comments as requested.
  ****************************************************************************************/
 
 
@@ -772,5 +769,4 @@
 
 /****************************************************************************************
  * END OF IMPORTANT DSA PATTERN LIST
- * Next step: Want me to generate a full structured Study Plan based on these patterns?
  ****************************************************************************************/
