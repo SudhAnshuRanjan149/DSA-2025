@@ -6,54 +6,56 @@
 /*========================================================================================
  1. WHAT IS A HEAP?
 ========================================================================================*/
-//
-// A **Heap** is a complete binary tree (all levels filled left → right).
-// It is mainly used to efficiently fetch the **min** or **max** element.
-//
-// TWO TYPES:
-// ----------
-// • Min-Heap → smallest element at root
-// • Max-Heap → largest element at root
-//
-// KEY PROPERTY:
-// -------------
-// For Min-Heap:
-//      parent <= children
-//
-// For Max-Heap:
-//      parent >= children
-//
-// NOT SORTED — only top element follows heap rule.
-//
-// STORAGE:
-// --------
-// Usually stored as an array, NOT nodes.
-//
-// INDEX RELATIONS (0-based):
-// --------------------------
-// parent(i)      = Math.floor((i - 1) / 2)
-// leftChild(i)   = 2*i + 1
-// rightChild(i)  = 2*i + 2
-//
-// TIME COMPLEXITY:
-// ----------------
-// Insert     → O(log n)
-// Delete top → O(log n)
-// Peek       → O(1)
-// Build heap → O(n)
-//
-// USE CASES:
-// ----------
-// ✔ Priority Queue  
-// ✔ Dijkstra’s algorithm  
-// ✔ Top-K problems  
-// ✔ Scheduling  
-// ✔ Heap sort  
-// ✔ Streaming median  
-// ✔ Merging sorted lists  
-// ✔ Frequency counting  
-//
+/*
 
+A **Heap** is a complete binary tree (all levels filled left → right).
+It is mainly used to efficiently fetch the **min** or **max** element.
+
+TWO TYPES:
+----------
+• Min-Heap → smallest element at root
+• Max-Heap → largest element at root
+
+KEY PROPERTY:
+-------------
+For Min-Heap:
+     parent <= children
+
+For Max-Heap:
+     parent >= children
+
+NOT SORTED — only top element follows heap rule.
+
+STORAGE:
+--------
+Usually stored as an array, NOT nodes.
+
+INDEX RELATIONS (0-based):
+--------------------------
+parent(i)      = Math.floor((i - 1) / 2)
+leftChild(i)   = 2*i + 1
+rightChild(i)  = 2*i + 2
+
+TIME COMPLEXITY:
+----------------
+Insert     → O(log n)
+Delete top → O(log n)
+Peek       → O(1)
+Build heap → O(n)
+
+USE CASES:
+----------
+✔ Priority Queue  
+✔ Dijkstra’s algorithm  
+✔ Top-K problems  
+✔ Scheduling  
+✔ Heap sort  
+✔ Streaming median  
+✔ Merging sorted lists  
+✔ Frequency counting  
+
+
+*/
 
 
 /*========================================================================================
