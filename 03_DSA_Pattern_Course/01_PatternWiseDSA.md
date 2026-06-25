@@ -1413,3 +1413,252 @@ function removeNthFromEnd(head, n) {
   - Delete node: `slow.next = slow.next.next` -> `3.next = 5`.
   - Return `dummy.next` (`head`).
 * **Final Output**: `[1, 2, 3, 5]`
+
+---
+
+## Day 5: Two Pointers Pattern Continued & LCA
+
+On Day 5, we explore strobogrammatic numbers, Lowest Common Ancestor (LCA) utilizing parent pointers, and greedy matching of subsequences.
+
+---
+
+### 1. Strobogrammatic Number (LeetCode 246)
+* **Pattern**: Two Pointers (Opposite Ends Collision)
+* **Difficulty**: Easy
+
+#### Problem Description
+A strobogrammatic number is a number that looks the same when rotated 180 degrees (upside down). Given a string `num` representing an integer, return `true` if it is strobogrammatic, or `false` otherwise.
+
+#### Approach 1: Brute Force (Build Rotated String)
+* **Intuition**: Create a reversed string by mapping each character in `num` to its rotated counterpart (if valid). If any character has no valid rotation, return `false`. Finally, compare the newly built string with the original `num`.
+* **Python Implementation**:
+```python
+def isStrobogrammatic(num: str) -> bool:
+    rotated_map = {'0': '0', '1': '1', '6': '9', '8': '8', '9': '6'}
+    rotated_chars = []
+    for char in reversed(num):
+        if char not in rotated_map:
+            return False
+        rotated_chars.append(rotated_map[char])
+    return "".join(rotated_chars) == num
+```
+* **JavaScript Implementation**:
+```javascript
+function isStrobogrammatic(num) {
+    const rotatedMap = { '0': '0', '1': '1', '6': '9', '8': '8', '9': '6' };
+    let rotated = '';
+    for (let i = num.length - 1; i >= 0; i--) {
+        const char = num[i];
+        if (!(char in rotatedMap)) {
+            return false;
+        }
+        rotated += rotatedMap[char];
+    }
+    return rotated === num;
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ where $N$ is the length of `num`.
+  * **Space Complexity**: $O(N)$ to store the rotated string.
+
+#### Approach 2: Optimized (Two Pointers - Space O(1))
+* **Intuition**: Keep `left = 0` and `right = len(num) - 1`. Compare `num[left]` and `num[right]`. They must be a valid strobogrammatic pair (e.g., `(0, 0)`, `(1, 1)`, `(8, 8)`, `(6, 9)`, or `(9, 6)`). If they match our map's rotated value, move `left` forward and `right` backward. If any pair is invalid or doesn't match, return `false`.
+* **Python Implementation**:
+```python
+def isStrobogrammatic(num: str) -> bool:
+    rotated_map = {'0': '0', '1': '1', '6': '9', '8': '8', '9': '6'}
+    left, right = 0, len(num) - 1
+    
+    while left <= right:
+        l_char = num[left]
+        r_char = num[right]
+        if l_char not in rotated_map or rotated_map[l_char] != r_char:
+            return False
+        left += 1
+        right -= 1
+    return True
+```
+* **JavaScript Implementation**:
+```javascript
+function isStrobogrammatic(num) {
+    const rotatedMap = { '0': '0', '1': '1', '6': '9', '8': '8', '9': '6' };
+    let left = 0, right = num.length - 1;
+    
+    while (left <= right) {
+        const lChar = num[left];
+        const rChar = num[right];
+        if (!(lChar in rotatedMap) || rotatedMap[lChar] !== rChar) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ since we check each character pair at most once.
+  * **Space Complexity**: $O(1)$ auxiliary space.
+
+#### Dry Run / Example Trace
+* **Input**: `num = "69"`
+* **Trace**:
+  1. Initialize `left = 0` (`'6'`), `right = 1` (`'9'`).
+  2. Map look up: `rotated_map['6']` is `'9'`.
+  3. Compare rotated value `'9'` with `num[right]` (`'9'`). They match!
+  4. Move pointers: `left = 1`, `right = 0`.
+  5. `left <= right` (1 <= 0) is **False**. Loop terminates.
+* **Final Output**: `True`
+
+---
+
+### 2. Lowest Common Ancestor of a Binary Tree III (LeetCode 1650)
+* **Pattern**: Two Pointers (Linked List Intersection Style)
+* **Difficulty**: Medium
+
+#### Problem Description
+Given two nodes of a binary tree, `p` and `q`, return their lowest common ancestor (LCA). Each node has a reference to its parent.
+
+#### Approach 1: Hash Set (Path Storing)
+* **Intuition**: Keep tracing parent pointers from node `p` up to the root, adding each node to a hash set. Then, trace parents from node `q` up to the root. The first node from `q`'s path that is already in the set is the LCA.
+* **Python Implementation**:
+```python
+def lowestCommonAncestor(p: 'Node', q: 'Node') -> 'Node':
+    visited = set()
+    curr = p
+    while curr:
+        visited.add(curr)
+        curr = curr.parent
+        
+    curr = q
+    while curr:
+        if curr in visited:
+            return curr
+        curr = curr.parent
+    return None
+```
+* **JavaScript Implementation**:
+```javascript
+function lowestCommonAncestor(p, q) {
+    const visited = new Set();
+    let curr = p;
+    while (curr !== null) {
+        visited.add(curr);
+        curr = curr.parent;
+    }
+    
+    curr = q;
+    while (curr !== null) {
+        if (visited.has(curr)) {
+            return curr;
+        }
+        curr = curr.parent;
+    }
+    return null;
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(H)$ where $H$ is the height of the tree.
+  * **Space Complexity**: $O(H)$ to store the nodes of the path.
+
+#### Approach 2: Optimized (Two Pointers - Intersection of Two Linked Lists - Space O(1))
+* **Intuition**: Since each node has parent pointers, the path from `p` to the root and from `q` to the root acts like two singly linked lists that merge at some point (specifically, they merge at the LCA and continue together up to the root). We can find the intersection node by running two pointers: `a` starting at `p`, and `b` starting at `q`.
+  - When pointer `a` reaches the root (becomes `null`), redirect it to start at `q`.
+  - When pointer `b` reaches the root (becomes `null`), redirect it to start at `p`.
+  - If they meet (`a == b`), they meet at the intersection point, which is the Lowest Common Ancestor.
+* **Python Implementation**:
+```python
+def lowestCommonAncestor(p: 'Node', q: 'Node') -> 'Node':
+    a, b = p, q
+    while a != b:
+        a = a.parent if a else q
+        b = b.parent if b else p
+    return a
+```
+* **JavaScript Implementation**:
+```javascript
+function lowestCommonAncestor(p, q) {
+    let a = p;
+    let b = q;
+    while (a !== b) {
+        a = (a !== null) ? a.parent : q;
+        b = (b !== null) ? b.parent : p;
+    }
+    return a;
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(H)$ because each pointer travels at most the sum of the distances from `p` and `q` to the root.
+  * **Space Complexity**: $O(1)$ auxiliary space.
+
+#### Dry Run / Example Trace
+* **Input**: A tree where `p` path to root is `p -> parent1 -> LCA -> root` (length 4) and `q` path to root is `q -> LCA -> root` (length 3).
+* **Trace**:
+  1. `a` starts at `p`, `b` starts at `q`.
+  2. `a = parent1`, `b = LCA`.
+  3. `a = LCA`, `b = root`.
+  4. `a = root`, `b = null` (re-directed to `p`).
+  5. `a = null` (re-directed to `q`), `b = parent1`.
+  6. `a = LCA`, `b = LCA`.
+  7. Loop ends because `a == b`. LCA node is found!
+
+---
+
+### 3. 2486. Append Characters to String to Make Subsequence
+* **Pattern**: Two Pointers (Dual Array Traversals / Same-direction greedy matching)
+* **Difficulty**: Medium
+
+#### Problem Description
+You are given two strings `s` and `t` consisting of lowercase English letters. Find the minimum number of characters that need to be appended to the end of `s` so that `t` becomes a subsequence of `s`.
+
+#### Approach: Optimized (Two Pointers - Greedy Matching)
+* **Intuition**: Keep pointer `i` for `s` and pointer `j` for `t`. Traverse `s` with pointer `i`. Whenever `s[i] == t[j]`, we have found a matching character of `t`, so we increment `j`. Since we want `t` to be a subsequence, we must match its characters in order. Once `i` reaches the end of `s`, the value of `j` represents how many characters of `t` have already been successfully matched as a subsequence. The remaining characters `len(t) - j` must be appended.
+* **Python Implementation**:
+```python
+def appendCharacters(s: str, t: str) -> int:
+    i, j = 0, 0
+    len_s, len_t = len(s), len(t)
+    
+    while i < len_s and j < len_t:
+        if s[i] == t[j]:
+            j += 1
+        i += 1
+        
+    return len_t - j
+```
+* **JavaScript Implementation**:
+```javascript
+function appendCharacters(s, t) {
+    let i = 0, j = 0;
+    const lenS = s.length, lenT = t.length;
+    
+    while (i < lenS && j < lenT) {
+        if (s[i] === t[j]) {
+            j++;
+        }
+        i++;
+    }
+    
+    return lenT - j;
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ where $N$ is the length of string `s`. We scan `s` at most once.
+  * **Space Complexity**: $O(1)$ auxiliary space.
+
+#### Dry Run / Example Trace
+* **Input**: `s = "coaching"`, `t = "coding"`
+* **Trace**:
+  `lenS = 8`, `lenT = 6`. Initialize `i = 0`, `j = 0`.
+  1. `s[0] = 'c'`, `t[0] = 'c'`. Match! Increment `j` to 1, `i` to 1.
+  2. `s[1] = 'o'`, `t[1] = 'o'`. Match! Increment `j` to 2, `i` to 2.
+  3. `s[2] = 'a'`, `t[2] = 'd'`. No match. Increment `i` to 3.
+  4. `s[3] = 'c'`, `t[2] = 'd'`. No match. Increment `i` to 4.
+  5. `s[4] = 'h'`, `t[2] = 'd'`. No match. Increment `i` to 5.
+  6. `s[5] = 'i'`, `t[2] = 'd'`. No match. Increment `i` to 6.
+  7. `s[6] = 'n'`, `t[2] = 'd'`. No match. Increment `i` to 7.
+  8. `s[7] = 'g'`, `t[2] = 'd'`. No match. Increment `i` to 8.
+  9. Loop terminates because `i < lenS` is **False**.
+  10. Remaining characters of `t` to append: `lenT - j` = `6 - 2 = 4` (characters `"ding"`).
+* **Final Output**: `4`
+
