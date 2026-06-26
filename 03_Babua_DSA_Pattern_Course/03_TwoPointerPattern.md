@@ -1,6 +1,7 @@
-# Pattern-Wise DSA Notes & Revision
+# Two Pointer Pattern DSA Notes
 
 ## Day 1: Two Pointers Pattern Theory
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=Elnhh8cC2vM&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=2)
 
 The **Two Pointers** pattern is one of the most fundamental and frequently used techniques for optimizing array, string, and linked list problems. It utilizes two reference variables (pointers) to traverse the data structure simultaneously, typically reducing the time complexity from $O(N^2)$ (nested loops) to $O(N)$ (linear time).
 
@@ -127,6 +128,7 @@ return false;
 ---
 
 ## Day 2: Two Pointers Pattern
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=Yi90cuHYyWQ&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=5)
 
 The **Two Pointers** pattern is a technique where two pointers (indices) are used to iterate through a data structure (typically an array or string) to solve problems with optimal time and space complexity. 
 
@@ -137,6 +139,7 @@ Common variations:
 ---
 
 ### 1. 125. Valid Palindrome
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/valid-palindrome/description/)
 * **Pattern**: Two Pointers (Opposite Ends)
 * **Difficulty**: Easy
 
@@ -218,6 +221,7 @@ function isPalindrome(s) {
 ---
 
 ### 2. 344. Reverse String
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/reverse-string/description/)
 * **Pattern**: Two Pointers (Opposite Ends - In-Place Swap)
 * **Difficulty**: Easy
 
@@ -285,6 +289,7 @@ function reverseString(s) {
 ---
 
 ### 3. 977. Squares of a Sorted Array
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/squares-of-a-sorted-array/description/)
 * **Pattern**: Two Pointers (Opposite Ends - Sorting on the fly)
 * **Difficulty**: Easy
 
@@ -382,6 +387,7 @@ function sortedSquares(nums) {
 ---
 
 ### 4. 680. Valid Palindrome II
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/valid-palindrome-ii/description/)
 * **Pattern**: Two Pointers (Opposite Ends with Mismatch Tolerance)
 * **Difficulty**: Easy/Medium
 
@@ -461,6 +467,7 @@ function validPalindrome(s) {
 ---
 
 ### 5. Valid Word Abbreviation (LeetCode 408 / NeetCode)
+* **Problem Link**: [NeetCode](https://neetcode.io/problems/valid-word-abbreviation/question?list=neetcode250)
 * **Pattern**: Two Pointers (Dual String Traversals)
 * **Difficulty**: Easy/Medium
 
@@ -569,12 +576,14 @@ function validWordAbbreviation(word, abbr) {
 ---
 
 ## Day 3: Two Pointers Pattern Continued
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=SP065oLnxGA&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=7)
 
 On Day 3, we dive deeper into the Two Pointers pattern, specifically focusing on sorting-based applications, multi-pointer collision, and in-place mergers.
 
 ---
 
 ### 1. 88. Merge Sorted Array
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/merge-sorted-array/description/)
 * **Pattern**: Two Pointers (Starting from the End)
 * **Difficulty**: Easy
 
@@ -673,6 +682,7 @@ function merge(nums1, m, nums2, n) {
 ---
 
 ### 2. 2824. Count Pairs Whose Sum is Less than Target
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/count-pairs-whose-sum-is-less-than-target/description/)
 * **Pattern**: Two Pointers (Sorting + Collision)
 * **Difficulty**: Easy
 
@@ -771,6 +781,7 @@ function countPairs(nums, target) {
 ---
 
 ### 3. 1. Two Sum
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/two-sum/description/)
 * **Pattern**: Hash Map (Optimized) / Two Pointers (with index preservation)
 * **Difficulty**: Easy
 
@@ -896,6 +907,7 @@ function twoSum(nums, target) {
 ---
 
 ### 4. 680. Valid Palindrome II
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/valid-palindrome-ii/description/)
 * **Pattern**: Two Pointers (Opposite Ends with Mismatch Tolerance)
 * **Difficulty**: Easy/Medium
 
@@ -956,6 +968,7 @@ function validPalindrome(s) {
 ---
 
 ### 5. 167. Two Sum II - Input Array Is Sorted
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/)
 * **Pattern**: Two Pointers (Opposite Ends Collision)
 * **Difficulty**: Easy
 
@@ -1018,6 +1031,7 @@ function twoSum(numbers, target) {
 ---
 
 ### 6. 15. 3Sum
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/3sum/description/)
 * **Pattern**: Two Pointers (Fix One + Two Pointer Collision)
 * **Difficulty**: Medium
 
@@ -1143,6 +1157,7 @@ function threeSum(nums) {
 ---
 
 ## Day 4: Two Pointers Pattern Continued & Linked List Pointers
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=pcj6S1KLxWc&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=8)
 
 On Day 4, we explore partition-based pointer movements (sorting subset boundaries) and fast & slow pointers spacing (sliding window size) for linked lists.
 
@@ -1242,6 +1257,7 @@ function sortTwoColors(nums) {
 ---
 
 ### 2. 75. Sort Colors
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/sort-colors/description/)
 * **Pattern**: Three Pointers (Dutch National Flag Algorithm)
 * **Difficulty**: Medium
 
@@ -1322,6 +1338,7 @@ function sortColors(nums) {
 ---
 
 ### 3. 19. Remove Nth Node From End of List
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/)
 * **Pattern**: Two Pointers (Linked List Fast & Slow / Pointer Spacing)
 * **Difficulty**: Medium
 
@@ -1417,12 +1434,14 @@ function removeNthFromEnd(head, n) {
 ---
 
 ## Day 5: Two Pointers Pattern Continued & LCA
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=jA74srakqvI&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=9)
 
 On Day 5, we explore strobogrammatic numbers, Lowest Common Ancestor (LCA) utilizing parent pointers, and greedy matching of subsequences.
 
 ---
 
 ### 1. Strobogrammatic Number (LeetCode 246)
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/strobogrammatic-number/description/)
 * **Pattern**: Two Pointers (Opposite Ends Collision)
 * **Difficulty**: Easy
 
@@ -1513,6 +1532,7 @@ function isStrobogrammatic(num) {
 ---
 
 ### 2. Lowest Common Ancestor of a Binary Tree III (LeetCode 1650)
+* **Problem Link**: [NeetCode](https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-tree-iii/question?list=neetcode250)
 * **Pattern**: Two Pointers (Linked List Intersection Style)
 * **Difficulty**: Medium
 
@@ -1605,6 +1625,7 @@ function lowestCommonAncestor(p, q) {
 ---
 
 ### 3. 2486. Append Characters to String to Make Subsequence
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/append-characters-to-string-to-make-subsequence/description/)
 * **Pattern**: Two Pointers (Dual Array Traversals / Same-direction greedy matching)
 * **Difficulty**: Medium
 
