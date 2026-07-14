@@ -7,7 +7,9 @@ This progress tracker helps you track your learning and practice progress patter
 ## 🔗 Quick Links
 * **Instructor:** <a href="https://www.linkedin.com/in/anuj-kumar-9a188968/" target="_blank">Anuj Kumar</a>
 * **YouTube Channel:** <a href="https://www.youtube.com/channel/UCrJ9A_U_e4-p5ZdDOjsa1KA" target="_blank">CTO Bhaiya</a>
-* **Detailed Notes & Code:** [03_TwoPointerPattern.md](03_TwoPointerPattern.md)
+* **Detailed Notes & Code:**
+  * [03_TwoPointerPattern.md](03_TwoPointerPattern.md) (Two Pointer Pattern)
+  * [04_Fast&SlowPointerPattern.md](04_Fast%26SlowPointerPattern.md) (Fast & Slow Pointer Pattern)
 
 ---
 
@@ -41,3 +43,13 @@ The **Two Pointer Pattern** uses two variables (pointers) to iterate over an arr
 | | | 19 | 557. Reverse Words in a String III | Easy | <a href="https://leetcode.com/problems/reverse-words-in-a-string-iii/description/" target="_blank">LeetCode</a> | [View Notes](03_TwoPointerPattern.md#2-557-reverse-words-in-a-string-iii) | ⬜ |
 
 ---
+
+## 🎯 Pattern 2: Fast & Slow Pointer Pattern
+
+The **Fast & Slow Pointer Pattern** (Hare & Tortoise Algorithm) uses two pointers that traverse the data structure (usually a Linked List or Array) at different speeds to detect cycles, identify starting points of cycles, or find midpoints.
+
+### 📅 Unified Lecture & Practice Tracker
+
+| Day | Lecture / Video Link | # | Question Name | Difficulty | Platform Link | Notes & Code | Done |
+| :---: | :--- | :---: | :--- | :---: | :---: | :---: | :---: |
+| **Day 7** | <a href="https://www.youtube.com/watch?v=FguUjuCzhj0&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=13" target="_blank">🎥 Day 7 Theory</a> | - | Fast & Slow Pointer Theory & Templates | - | - | [View Notes](04_Fast%26SlowPointerPattern.md#day-7-fast--slow-pointers-theory-hare--tortoise-algorithm) | ⬜ |
