@@ -1683,3 +1683,264 @@ function appendCharacters(s, t) {
   10. Remaining characters of `t` to append: `lenT - j` = `6 - 2 = 4` (characters `"ding"`).
 * **Final Output**: `4`
 
+---
+
+## Day 6: Two Pointers Pattern Continued & String Reversals
+* **Lecture Video**: [Watch on YouTube](https://www.youtube.com/watch?v=IW8gQ2u2O_I&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=12&t=2501s)
+
+On Day 6, we apply the Two Pointers pattern to word-by-word and character-by-character string reversal problems.
+
+---
+
+### 1. 151. Reverse Words in a String
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/reverse-words-in-a-string/description/)
+* **Pattern**: Two Pointers (Reversal + Space Cleanup)
+* **Difficulty**: Medium
+
+#### Problem Description
+Given an input string `s`, reverse the order of the words. A word is defined as a sequence of non-space characters. The words in `s` will be separated by at least one space. Return a string of the words in reverse order concatenated by a single space, without any leading, trailing, or multiple spaces.
+
+#### Approach 1: Language Built-ins
+* **Intuition**: Trim leading/trailing spaces, split the string by whitespace, reverse the list of words, and join them with a single space.
+* **Python Implementation**:
+```python
+def reverseWords(s: str) -> str:
+    # split() automatically handles multiple spaces and strips leading/trailing spaces
+    words = s.split()
+    return " ".join(words[::-1])
+```
+* **JavaScript Implementation**:
+```javascript
+function reverseWords(s) {
+    // trim() removes leading/trailing spaces, split(/\s+/) splits by one or more spaces
+    const words = s.trim().split(/\s+/);
+    return words.reverse().join(' ');
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ where $N$ is the length of string `s`.
+  * **Space Complexity**: $O(N)$ to store the array/list of words.
+
+#### Approach 2: Two Pointers (In-place Reversal Logic - One-Pass)
+* **Intuition**: 
+  1. Convert the string to a mutable array of characters.
+  2. Reverse the entire array.
+  3. Reverse each individual word within the reversed array.
+  4. Clean up spaces: Keep a write pointer `write` and explorer pointer `i`. Traverse the array, skipping multiple spaces, and copying characters. At the end, truncate the array to the correct size.
+* **Python Implementation**:
+```python
+def reverseWords(s: str) -> str:
+    chars = list(s)
+    n = len(chars)
+    
+    # Helper to reverse a portion of list in-place
+    def reverse_range(left: int, right: int):
+        while left < right:
+            chars[left], chars[right] = chars[right], chars[left]
+            left += 1
+            right -= 1
+            
+    # Step 1: Reverse the entire character array
+    reverse_range(0, n - 1)
+    
+    # Step 2: Reverse each word in-place
+    start = 0
+    for end in range(n):
+        if chars[end] == ' ':
+            reverse_range(start, end - 1)
+            start = end + 1
+    # Reverse the last word
+    reverse_range(start, n - 1)
+    
+    # Step 3: Clean up spaces (Two Pointers)
+    write_idx = 0
+    i = 0
+    while i < n:
+        if chars[i] != ' ':
+            # If it's not the first word, append a single space
+            if write_idx > 0:
+                chars[write_idx] = ' '
+                write_idx += 1
+            
+            # Copy the current word
+            while i < n and chars[i] != ' ':
+                chars[write_idx] = chars[i]
+                write_idx += 1
+                i += 1
+        i += 1
+        
+    return "".join(chars[:write_idx])
+```
+* **JavaScript Implementation**:
+```javascript
+function reverseWords(s) {
+    const chars = s.split('');
+    const n = chars.length;
+    
+    // Helper to reverse a portion of array in-place
+    const reverseRange = (left, right) => {
+        while (left < right) {
+            const temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+    };
+    
+    // Step 1: Reverse the entire array
+    reverseRange(0, n - 1);
+    
+    // Step 2: Reverse each word in-place
+    let start = 0;
+    for (let end = 0; end < n; end++) {
+        if (chars[end] === ' ') {
+            reverseRange(start, end - 1);
+            start = end + 1;
+        }
+    }
+    reverseRange(start, n - 1); // Reverse the last word
+    
+    // Step 3: Clean up spaces
+    let writeIdx = 0;
+    let i = 0;
+    while (i < n) {
+        if (chars[i] !== ' ') {
+            if (writeIdx > 0) {
+                chars[writeIdx++] = ' ';
+            }
+            while (i < n && chars[i] !== ' ') {
+                chars[writeIdx++] = chars[i++];
+            }
+        }
+        i++;
+    }
+    
+    return chars.slice(0, writeIdx).join('');
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ since reversing the array and cleaning spaces takes $O(N)$ time.
+  * **Space Complexity**: $O(N)$ to store the character array.
+
+#### Dry Run / Example Trace (Two Pointers)
+* **Input**: `s = "  hello world  "`
+* **Trace**:
+  1. Convert to character array: `chars = [' ', ' ', 'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', ' ', ' ']`
+  2. Reverse the entire array: `[' ', ' ', 'd', 'l', 'r', 'o', 'w', ' ', 'o', 'l', 'l', 'e', 'h', ' ', ' ']`
+  3. Reverse each word:
+     - Word `"dlrow"` is reversed to `"world"`
+     - Word `"olleh"` is reversed to `"hello"`
+     - Array is now: `[' ', ' ', 'w', 'o', 'r', 'l', 'd', ' ', 'h', 'e', 'l', 'l', 'o', ' ', ' ']`
+  4. Clean up spaces with `write_idx`:
+     - Skip leading spaces.
+     - Copy `"world"` -> `write_idx` reaches 5.
+     - See next word: add one space, `write_idx = 6`.
+     - Copy `"hello"` -> `write_idx` reaches 11.
+     - Skip trailing spaces.
+  5. Slice array up to `write_idx = 11` and join: `"world hello"`.
+* **Final Output**: `"world hello"`
+
+---
+
+### 2. 557. Reverse Words in a String III
+* **Problem Link**: [LeetCode](https://leetcode.com/problems/reverse-words-in-a-string-iii/description/)
+* **Pattern**: Two Pointers (Sub-array Reversal)
+* **Difficulty**: Easy
+
+#### Problem Description
+Given a string `s`, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+
+#### Approach 1: Language Built-ins
+* **Intuition**: Split the sentence by space, reverse each word, and join them back with a single space.
+* **Python Implementation**:
+```python
+def reverseWords(s: str) -> str:
+    return " ".join(word[::-1] for word in s.split(" "))
+```
+* **JavaScript Implementation**:
+```javascript
+function reverseWords(s) {
+    return s.split(' ').map(word => word.split('').reverse().join('')).join(' ');
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$
+  * **Space Complexity**: $O(N)$ auxiliary space.
+
+#### Approach 2: Optimized (Two Pointers - In-place Word Swap)
+* **Intuition**: Convert string to list of characters. Loop through the characters. Maintain `start` pointing to the beginning of the current word. When we find a space at index `i` (or reach the end of the string), reverse the word range from `start` to `i - 1` using two pointers. Set `start = i + 1` for the next word.
+* **Python Implementation**:
+```python
+def reverseWords(s: str) -> str:
+    chars = list(s)
+    n = len(chars)
+    start = 0
+    
+    def reverse_range(l: int, r: int):
+        while l < r:
+            chars[l], chars[r] = chars[r], chars[l]
+            l += 1
+            r -= 1
+            
+    for i in range(n):
+        if chars[i] == ' ':
+            reverse_range(start, i - 1)
+            start = i + 1
+            
+    # Reverse the last word
+    reverse_range(start, n - 1)
+    
+    return "".join(chars)
+```
+* **JavaScript Implementation**:
+```javascript
+function reverseWords(s) {
+    const chars = s.split('');
+    const n = chars.length;
+    let start = 0;
+    
+    const reverseRange = (l, r) => {
+        while (l < r) {
+            const temp = chars[l];
+            chars[l] = chars[r];
+            chars[r] = temp;
+            l++;
+            r--;
+        }
+    };
+    
+    for (let i = 0; i < n; i++) {
+        if (chars[i] === ' ') {
+            reverseRange(start, i - 1);
+            start = i + 1;
+        }
+    }
+    
+    // Reverse the last word
+    reverseRange(start, n - 1);
+    
+    return chars.join('');
+}
+```
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ since each character is read at most twice and swapped at most once.
+  * **Space Complexity**: $O(N)$ to store the character array.
+
+#### Dry Run / Example Trace
+* **Input**: `s = "Let's go"`
+* **Trace**:
+  1. `chars = ['L', 'e', 't', "'", 's', ' ', 'g', 'o']`, `n = 8`. `start = 0`.
+  2. `i = 0` to `4`: no spaces.
+  3. `i = 5`: `chars[5]` is `' '`. Reverse range `start = 0` to `i - 1 = 4`.
+     - Swap `chars[0]` ('L') and `chars[4]` ('s')
+     - Swap `chars[1]` ('e') and `chars[3]` ("'")
+     - Word becomes `"s'teL"`.
+     - Set `start = 5 + 1 = 6`.
+  4. `i = 6` to `7`: no spaces. Loop ends.
+  5. Reverse the last word: range `start = 6` to `n - 1 = 7`.
+     - Swap `chars[6]` ('g') and `chars[7]` ('o') -> `"og"`.
+  6. Join array: `"s'teL og"`.
+* **Final Output**: `"s'teL og"`
+
+
