@@ -488,3 +488,426 @@ function isHappy(n) {
     - `fast = get_next(get_next(100)) = get_next(1^2 + 0^2 + 0^2) = get_next(1) = 1`
   * `fast` becomes `1`. Loop terminates.
   * Return `True`.
+
+---
+
+## Day 9: Fast & Slow Pointers — 3 Popular Interview Questions
+* **Lecture Video**: <a href="https://www.youtube.com/watch?v=E85jp_rHivc&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=16&t=2975s" target="_blank">Watch on YouTube</a>
+
+On Day 9, we solve 3 classic interview problems using the Fast & Slow Pointer (Floyd's Cycle Detection / Hare & Tortoise) pattern. Each problem demonstrates a novel application of the same core technique.
+
+---
+
+### 1. Split a Circular Linked List into Two Halves
+* **Problem Link**: <a href="https://www.geeksforgeeks.org/problems/split-a-circular-linked-list-into-two-halves/1" target="_blank">GeeksforGeeks</a>
+* **Difficulty**: Medium
+* **Pattern**: Fast & Slow Pointers (Midpoint Detection on Circular List)
+
+#### Problem Description
+Given a Circular Linked List of size $N$, split it into two circular linked lists. The first circular linked list should contain the first half of the nodes (i.e., ceil(N/2) nodes), and the second should contain the rest.
+
+#### Solution
+
+**Key Insight**: In a circular linked list, the `fast` pointer's termination condition is different. Instead of checking `fast.next == null`, we stop when `fast.next == head` (odd length) or `fast.next.next == head` (even length). The `slow` pointer will then be at the last node of the first half.
+
+* **Intuition**:
+  1. Use `slow` (1 step) and `fast` (2 steps) to find the midpoint.
+  2. Once `slow` reaches the midpoint, `slow.next` is the head of the second half.
+  3. Set `slow.next = head` to close the first half into a circle.
+  4. Traverse the second half to find its last node and point it back to `slow.next` (the original second head) to close the second circle.
+
+* **Python Implementation**:
+```python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def splitCircularList(head):
+    # Edge case: 0 or 1 nodes
+    if not head or head.next == head:
+        return head, None
+
+    slow = head
+    fast = head
+
+    # Move fast by 2 and slow by 1 until fast reaches the last node
+    # For odd N: fast.next == head
+    # For even N: fast.next.next == head
+    while fast.next != head and fast.next.next != head:
+        slow = slow.next
+        fast = fast.next.next
+
+    # If even number of nodes, advance fast by one more step
+    if fast.next.next == head:
+        fast = fast.next
+
+    # head2 is the start of the second half
+    head2 = slow.next
+
+    # Close the first half into a circle
+    slow.next = head
+
+    # Close the second half into a circle: find the tail of second half
+    # fast is already at the last node of the full list
+    fast.next = head2
+
+    return head, head2
+```
+
+* **JavaScript Implementation**:
+```javascript
+function splitCircularList(head) {
+    // Edge case: 0 or 1 nodes
+    if (!head || head.next === head) {
+        return [head, null];
+    }
+
+    let slow = head;
+    let fast = head;
+
+    // Advance until fast is at the last or second-to-last node
+    while (fast.next !== head && fast.next.next !== head) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // If even number of nodes, advance fast by one more step
+    if (fast.next.next === head) {
+        fast = fast.next;
+    }
+
+    // head2 is the start of the second half
+    const head2 = slow.next;
+
+    // Close the first half into a circle
+    slow.next = head;
+
+    // Close the second half into a circle
+    fast.next = head2;
+
+    return [head, head2];
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ — single traversal of the list.
+  * **Space Complexity**: $O(1)$ — no extra space used.
+
+* **Dry Run**:
+  * Input: `1 → 2 → 3 → 4 → 5 → (back to 1)` (circular)
+  * Initial: `slow = 1`, `fast = 1`
+  * Step 1: `slow = 2`, `fast = 3`
+  * Step 2: `slow = 3`, `fast = 5`
+  * `fast.next == head (1)` → stop (odd length case).
+  * `head2 = slow.next = 4`
+  * `slow.next = head (1)` → First half: `1 → 2 → 3 → (back to 1)` ✓
+  * `fast.next = head2 (4)` → Second half: `4 → 5 → (back to 4)` ✓
+
+---
+
+### 2. 287. Find the Duplicate Number
+* **Problem Link**: <a href="https://leetcode.com/problems/find-the-duplicate-number/description/" target="_blank">LeetCode</a>
+* **Difficulty**: Medium
+* **Pattern**: Approach 1 — Sorting; Approach 2 — Fast & Slow Pointers (Implicit Cycle Detection)
+
+#### Problem Description
+Given an array `nums` containing $N + 1$ integers where each integer is in the range $[1, N]$ (inclusive), there is exactly one repeated number in `nums`. Return this repeated number **without modifying the array** and using **only constant extra space**.
+
+---
+
+#### Approach 1: Sorting
+* **Intuition**: Sort the array. Since integers are in $[1, N]$ and one is duplicated, any duplicate will appear in adjacent positions after sorting.
+* **Note**: This approach **modifies** the array, so it does not satisfy the full problem constraints. Presented as a baseline.
+
+* **Python Implementation**:
+```python
+def findDuplicate_sort(nums: list[int]) -> int:
+    nums.sort()
+    for i in range(1, len(nums)):
+        if nums[i] == nums[i - 1]:
+            return nums[i]
+    return -1
+```
+
+* **JavaScript Implementation**:
+```javascript
+function findDuplicate_sort(nums) {
+    nums.sort((a, b) => a - b);
+    for (let i = 1; i < nums.length; i++) {
+        if (nums[i] === nums[i - 1]) {
+            return nums[i];
+        }
+    }
+    return -1;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N \log N)$ for sorting.
+  * **Space Complexity**: $O(1)$ or $O(\log N)$ depending on sort implementation. Modifies input.
+
+---
+
+#### Approach 2: Floyd's Cycle Detection (Optimal ✅)
+* **Core Insight — Array as a Linked List**:
+  Imagine each index $i$ points to `nums[i]` as its "next node". Since all values are in $[1, N]$ and the array has $N + 1$ elements, the value `0` at index `0` is the guaranteed starting point (never pointed to by others, since values are $\geq 1$). Because one value is duplicated, **two indices point to the same "next" node**, creating a cycle.
+
+* **Mapping**:
+  - Index → Node
+  - `nums[i]` → `node.next`
+  - Starting at index `0` (value `nums[0]`) is the "head".
+
+* **Intuition (Two Phases)**:
+  - **Phase 1 (Collision)**: Move `slow` one step at a time (`slow = nums[slow]`) and `fast` two steps at a time (`fast = nums[nums[fast]]`). They will meet inside the cycle.
+  - **Phase 2 (Finding Entry)**: Reset one pointer to the start (`0`). Move both pointers one step at a time. Where they meet is the entry point of the cycle — which is the **duplicate number**.
+
+* **Why this works — Mathematical Proof**:
+  - Let $X$ = distance from start to cycle entry (the duplicate index).
+  - Let $Y$ = distance from cycle entry to meeting point inside cycle.
+  - Let $C$ = length of the cycle.
+  - At meeting point: $\text{dist}(\text{fast}) = 2 \cdot \text{dist}(\text{slow})$
+  - $\Rightarrow X + Y + kC = 2(X + Y)$ for some integer $k$
+  - $\Rightarrow X = kC - Y = (k-1)C + (C - Y)$
+  - $(C - Y)$ is the remaining distance from meeting point to cycle entry.
+  - So: distance from `0` to cycle entry ($X$) = distance from meeting point to cycle entry.
+  - Resetting one pointer to `0` and advancing both at speed 1 will make them meet at the cycle entry = duplicate number. ✅
+
+* **Python Implementation**:
+```python
+def findDuplicate(nums: list[int]) -> int:
+    # Phase 1: Find the collision point
+    slow = nums[0]
+    fast = nums[0]
+
+    while True:
+        slow = nums[slow]          # 1 step
+        fast = nums[nums[fast]]    # 2 steps
+        if slow == fast:
+            break
+
+    # Phase 2: Find the entry point of the cycle (the duplicate)
+    slow = nums[0]                 # Reset slow to start
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]          # Both move 1 step now
+
+    return slow
+```
+
+* **JavaScript Implementation**:
+```javascript
+function findDuplicate(nums) {
+    // Phase 1: Find the collision point
+    let slow = nums[0];
+    let fast = nums[0];
+
+    do {
+        slow = nums[slow];          // 1 step
+        fast = nums[nums[fast]];    // 2 steps
+    } while (slow !== fast);
+
+    // Phase 2: Find the entry point of the cycle (the duplicate)
+    slow = nums[0];                 // Reset slow to start
+    while (slow !== fast) {
+        slow = nums[slow];
+        fast = nums[fast];          // Both move 1 step now
+    }
+
+    return slow;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ — Phase 1 takes $O(N)$, Phase 2 takes $O(N)$.
+  * **Space Complexity**: $O(1)$ — no extra space, array not modified. ✅
+
+* **Dry Run**:
+  * Input: `nums = [1, 3, 4, 2, 2]` → $N = 4$, values in $[1, 4]$.
+  * Treat as linked list: `0 → 1 → 3 → 2 → 4 → 2 → 4 → ...` (cycle at index 2)
+  * **Phase 1**:
+    - Initial: `slow = nums[0] = 1`, `fast = nums[0] = 1`
+    - Step 1: `slow = nums[1] = 3`, `fast = nums[nums[1]] = nums[3] = 2`
+    - Step 2: `slow = nums[3] = 2`, `fast = nums[nums[2]] = nums[4] = 2`
+    - `slow == fast == 2`. Collision detected.
+  * **Phase 2**:
+    - Reset: `slow = nums[0] = 1`, `fast = 2`
+    - Step 1: `slow = nums[1] = 3`, `fast = nums[2] = 4`
+    - Step 2: `slow = nums[3] = 2`, `fast = nums[4] = 2`
+    - `slow == fast == 2`. The duplicate is `2`. ✅
+
+---
+
+### 3. 234. Palindrome Linked List
+* **Problem Link**: <a href="https://leetcode.com/problems/palindrome-linked-list/description/" target="_blank">LeetCode</a>
+* **Difficulty**: Easy
+* **Pattern**: Approach 1 — Extra Space; Approach 2 — Fast & Slow Pointers + In-place Reversal
+
+#### Problem Description
+Given the `head` of a singly linked list, return `true` if it is a palindrome, or `false` otherwise.
+
+---
+
+#### Approach 1: Using Extra Space (Array)
+* **Intuition**: Copy all node values into an array. Use two pointers from both ends to check if the array is a palindrome.
+
+* **Python Implementation**:
+```python
+def isPalindrome_space(head: 'ListNode') -> bool:
+    values = []
+    curr = head
+    while curr:
+        values.append(curr.val)
+        curr = curr.next
+
+    left, right = 0, len(values) - 1
+    while left < right:
+        if values[left] != values[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+```
+
+* **JavaScript Implementation**:
+```javascript
+function isPalindrome_space(head) {
+    const values = [];
+    let curr = head;
+    while (curr !== null) {
+        values.push(curr.val);
+        curr = curr.next;
+    }
+
+    let left = 0;
+    let right = values.length - 1;
+    while (left < right) {
+        if (values[left] !== values[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$
+  * **Space Complexity**: $O(N)$ — extra array used.
+
+---
+
+#### Approach 2: Fast & Slow Pointers + Reverse Second Half (Optimal ✅)
+* **Intuition**: A palindrome reads the same forwards and backwards. If we find the midpoint of the linked list and reverse the second half, we can compare the first half and the reversed second half node by node.
+
+* **Algorithm (3 Steps)**:
+  1. **Find the middle**: Use `slow` (1 step) and `fast` (2 steps). When `fast` reaches the end, `slow` is at the middle.
+  2. **Reverse the second half**: Reverse the linked list starting from `slow.next` (the second half).
+  3. **Compare both halves**: Walk one pointer from `head` and one from the reversed second half. If all values match, it's a palindrome.
+  4. *(Optional but good practice)*: Restore the list by reversing the second half again.
+
+* **Python Implementation**:
+```python
+def isPalindrome(head: 'ListNode') -> bool:
+    # Step 1: Find the middle of the linked list
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+    # Step 2: Reverse the second half
+    prev = None
+    curr = slow
+    while curr:
+        next_node = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_node
+    # 'prev' is now the head of the reversed second half
+
+    # Step 3: Compare first half and reversed second half
+    left = head
+    right = prev
+    while right:  # second half may be shorter or equal
+        if left.val != right.val:
+            return False
+        left = left.next
+        right = right.next
+
+    return True
+```
+
+* **JavaScript Implementation**:
+```javascript
+function isPalindrome(head) {
+    // Step 1: Find the middle of the linked list
+    let slow = head;
+    let fast = head;
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse the second half
+    let prev = null;
+    let curr = slow;
+    while (curr !== null) {
+        const nextNode = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextNode;
+    }
+    // 'prev' is now the head of the reversed second half
+
+    // Step 3: Compare first half and reversed second half
+    let left = head;
+    let right = prev;
+    while (right !== null) {
+        if (left.val !== right.val) {
+            return false;
+        }
+        left = left.next;
+        right = right.next;
+    }
+
+    return true;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ — one pass to find the middle + one pass to reverse + one pass to compare.
+  * **Space Complexity**: $O(1)$ — in-place reversal, no extra space. ✅
+
+* **Dry Run (Odd Length)**:
+  * Input: `1 → 2 → 3 → 2 → 1`
+  * **Step 1** (Find middle):
+    - Initial: `slow = 1`, `fast = 1`
+    - Step 1: `slow = 2`, `fast = 3`
+    - Step 2: `slow = 3`, `fast = 1` (last node). Stop.
+    - Middle is node `3`.
+  * **Step 2** (Reverse second half starting from `3`):
+    - Before: `3 → 2 → 1 → null`
+    - After: `null ← 3 ← 2 ← 1` (i.e., `prev = 1`)
+  * **Step 3** (Compare):
+    - `left = 1`, `right = 1` → match ✓
+    - `left = 2`, `right = 2` → match ✓
+    - `left = 3`, `right = 3` → match ✓
+    - `right` becomes `null`. Stop.
+  * Return `True`. ✅
+
+* **Dry Run (Even Length)**:
+  * Input: `1 → 2 → 2 → 1`
+  * **Step 1** (Find middle):
+    - Initial: `slow = 1`, `fast = 1`
+    - Step 1: `slow = 2` (2nd node), `fast = 2` (3rd node)
+    - `fast.next` is `1`, `fast.next.next` is `null` → stop.
+    - Middle is the 2nd node (value `2`).
+  * **Step 2** (Reverse second half starting from 2nd `2`):
+    - Before: `2 → 1 → null`
+    - After: `null ← 2 ← 1` (i.e., `prev = 1`)
+  * **Step 3** (Compare):
+    - `left = 1`, `right = 1` → match ✓
+    - `left = 2`, `right = 2` → match ✓
+    - `right` becomes `null`. Stop.
+  * Return `True`. ✅
