@@ -911,3 +911,197 @@ function isPalindrome(head) {
     - `left = 2`, `right = 2` → match ✓
     - `right` becomes `null`. Stop.
   * Return `True`. ✅
+
+---
+
+## Day 10: Fast & Slow Pointers — Maximum Twin Sum of a Linked List
+* **Lecture Video**: <a href="https://www.youtube.com/watch?v=t40HN4Rla30&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=17" target="_blank">Watch on YouTube</a>
+
+Day 10 focuses on a single problem that beautifully combines midpoint detection with in-place reversal to achieve an $O(1)$ space solution.
+
+---
+
+### 1. 2130. Maximum Twin Sum of a Linked List
+* **Problem Link**: <a href="https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/description/" target="_blank">LeetCode</a>
+* **Difficulty**: Medium
+* **Pattern**: Approach 1 — Extra Space (Array); Approach 2 — Fast & Slow Pointers + In-place Reversal
+
+#### Problem Description
+In a linked list of size $N$ where $N$ is **even**, the **twin** of the $i$-th node (0-indexed) is the $(N-1-i)$-th node.
+
+* Node `0` is the twin of node `N-1`.
+* Node `1` is the twin of node `N-2`.
+* And so on...
+
+The **twin sum** is defined as the sum of a node and its twin. Return the **maximum twin sum** of the linked list.
+
+**Example**:
+* Input: `4 → 2 → 5 → 1`
+* Twins: `(4,1)` and `(2,5)` → Twin sums: `5` and `7`
+* Output: `7`
+
+---
+
+#### Approach 1: Using Extra Space (Array)
+* **Intuition**: Copy all node values into an array. Then use two pointers starting from both ends to compute all twin sums and track the maximum.
+
+* **Algorithm**:
+  1. Traverse the linked list and store all values in an array `vals`.
+  2. Initialize `left = 0`, `right = len(vals) - 1`.
+  3. Compute `vals[left] + vals[right]` for each pair, updating the max.
+  4. Stop when `left >= right`.
+
+* **Python Implementation**:
+```python
+def pairSum_space(head: 'ListNode') -> int:
+    vals = []
+    curr = head
+    while curr:
+        vals.append(curr.val)
+        curr = curr.next
+
+    max_sum = 0
+    left, right = 0, len(vals) - 1
+    while left < right:
+        max_sum = max(max_sum, vals[left] + vals[right])
+        left += 1
+        right -= 1
+
+    return max_sum
+```
+
+* **JavaScript Implementation**:
+```javascript
+function pairSum_space(head) {
+    const vals = [];
+    let curr = head;
+    while (curr !== null) {
+        vals.push(curr.val);
+        curr = curr.next;
+    }
+
+    let maxSum = 0;
+    let left = 0;
+    let right = vals.length - 1;
+    while (left < right) {
+        maxSum = Math.max(maxSum, vals[left] + vals[right]);
+        left++;
+        right--;
+    }
+
+    return maxSum;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ — one pass to collect values, one pass to compute sums.
+  * **Space Complexity**: $O(N)$ — extra array stores all $N$ values.
+
+---
+
+#### Approach 2: Fast & Slow Pointers + Reverse Second Half (Optimal ✅)
+* **Intuition**:
+  The twin of node `i` is node `N-1-i`. For a list of length $N$ (even), node `0` pairs with node `N-1`, node `1` pairs with node `N-2`, etc. This means the **first half** pairs with the **reversed second half** — node for node.
+
+  If we reverse the second half and then walk a pointer through the first half and another through the reversed second half simultaneously, each step gives us one twin pair.
+
+* **Algorithm (3 Steps)**:
+  1. **Find the middle**: Use `slow` (1 step) and `fast` (2 steps). When `fast` reaches `null`, `slow` is at the start of the second half.
+  2. **Reverse the second half**: Reverse the linked list from `slow` onwards in-place.
+  3. **Compute twin sums**: Walk `left` from `head` and `right` from the reversed second half's head simultaneously, computing `left.val + right.val` at each step. Track the maximum.
+
+* **Python Implementation**:
+```python
+def pairSum(head: 'ListNode') -> int:
+    # Step 1: Find the start of the second half (slow will be there)
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    # slow is now at the start of the second half
+
+    # Step 2: Reverse the second half in-place
+    prev = None
+    curr = slow
+    while curr:
+        next_node = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_node
+    # prev is now the head of the reversed second half
+
+    # Step 3: Compute twin sums and find the maximum
+    max_sum = 0
+    left = head
+    right = prev
+    while right:  # second half has N/2 nodes
+        max_sum = max(max_sum, left.val + right.val)
+        left = left.next
+        right = right.next
+
+    return max_sum
+```
+
+* **JavaScript Implementation**:
+```javascript
+function pairSum(head) {
+    // Step 1: Find the start of the second half
+    let slow = head;
+    let fast = head;
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    // slow is now at the start of the second half
+
+    // Step 2: Reverse the second half in-place
+    let prev = null;
+    let curr = slow;
+    while (curr !== null) {
+        const nextNode = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextNode;
+    }
+    // prev is now the head of the reversed second half
+
+    // Step 3: Compute twin sums and find the maximum
+    let maxSum = 0;
+    let left = head;
+    let right = prev;
+    while (right !== null) {
+        maxSum = Math.max(maxSum, left.val + right.val);
+        left = left.next;
+        right = right.next;
+    }
+
+    return maxSum;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ — one pass to find the middle + one pass to reverse + one pass to compute sums.
+  * **Space Complexity**: $O(1)$ — all operations done in-place with only pointer variables. ✅
+
+* **Dry Run**:
+  * Input: `4 → 2 → 5 → 1` (N = 4, even)
+  * **Step 1** (Find middle / start of second half):
+    - Initial: `slow = 4`, `fast = 4`
+    - Iter 1: `slow = 2` (2nd node), `fast = 5` (3rd node)
+    - Iter 2: `slow = 5` (3rd node), `fast = null` (past end). Stop.
+    - `slow` is at node `5` — the start of the second half.
+  * **Step 2** (Reverse `5 → 1 → null`):
+    - After reversal: `1 → 5 → null` (i.e., `prev` points to node `1`)
+  * **Step 3** (Compute twin sums):
+    - `left = 4`, `right = 1` → sum = `5`, `max_sum = 5`
+    - `left = 2`, `right = 5` → sum = `7`, `max_sum = 7`
+    - `right` becomes `null`. Stop.
+  * Return `7`. ✅
+
+* **Why `slow` lands at the second half's start**:
+  - For a list `a → b → c → d` (N=4):
+    - Init: `slow=a`, `fast=a`
+    - Iter 1: `slow=b`, `fast=c`
+    - Iter 2: `slow=c`, `fast=null` → stop.
+  - `slow` is at `c`, which is index $N/2 = 2$. The second half is `[c, d]`. ✅
+  - The termination condition `fast and fast.next` causes `slow` to land precisely at the $(N/2)$-th node (0-indexed), which is the first node of the second half.
