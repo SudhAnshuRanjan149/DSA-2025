@@ -1105,3 +1105,429 @@ function pairSum(head) {
     - Iter 2: `slow=c`, `fast=null` → stop.
   - `slow` is at `c`, which is index $N/2 = 2$. The second half is `[c, d]`. ✅
   - The termination condition `fast and fast.next` causes `slow` to land precisely at the $(N/2)$-th node (0-indexed), which is the first node of the second half.
+
+---
+
+## Day 11: Fast & Slow Pointers — Circular Array Loop
+* **Lecture Video**: <a href="https://www.youtube.com/watch?v=nFZ1mysCZc0&list=PLVItHqpXY_DDFNeS6NUUoRsloyaPRdl1l&index=18" target="_blank">Watch on YouTube</a>
+
+Day 11 applies the Fast & Slow pointer pattern to a **circular array** instead of a linked list, requiring careful handling of the circular index, direction consistency, and single-element loop guards.
+
+---
+
+### 1. 457. Circular Array Loop
+* **Problem Link**: <a href="https://leetcode.com/problems/circular-array-loop/description/" target="_blank">LeetCode</a>
+* **Difficulty**: Medium
+* **Pattern**: Approach 1 — Brute Force; Approach 2 — Optimised Visited-Marking; Approach 3 — Fast & Slow Pointers
+
+#### Problem Description
+You are given a circular array `nums` of non-zero integers. Each element `nums[i]` represents the number of steps to move from index `i`:
+- **Positive** → move forward (right).
+- **Negative** → move backward (left).
+
+Since the array is circular, moving past the last element wraps around to the first, and moving before the first element wraps around to the last.
+
+A **cycle** in `nums` is a sequence of indices `seq` of length `k` (where `k > 1`) such that:
+1. Following the indices according to the defined rules gives the sequence $\text{seq}[0] \to \text{seq}[1] \to \ldots \to \text{seq}[k-1] \to \text{seq}[0]$.
+2. All elements `nums[seq[j]]` are either **all positive** or **all negative** (i.e., the entire cycle moves in one direction).
+
+Return `true` if there is a cycle in `nums`, or `false` otherwise.
+
+**Examples**:
+* Input: `nums = [2, -1, 1, 2, 2]` → Output: `true` (cycle: `0 → 2 → 3 → 0`)
+* Input: `nums = [-1, 2]` → Output: `false` (no valid cycle)
+* Input: `nums = [-2, 1, -1, -2, -2]` → Output: `false` (single-element self-loop not valid)
+
+---
+
+#### 🔑 Key Helper: `get_next(i)` — Circular Index Calculation
+Moving from index `i` by `nums[i]` steps in a circular array of length `n`:
+
+```
+next = (i + nums[i]) % n
+```
+
+However, Python's `%` handles negatives correctly, but in other languages (e.g., JavaScript), `%` can return negative values. The **universal safe formula**:
+
+$$\text{next} = (( i + \text{nums}[i] ) \% n + n) \% n$$
+
+```python
+def get_next(nums, i):
+    n = len(nums)
+    return ((i + nums[i]) % n + n) % n
+```
+
+```javascript
+function getNext(nums, i) {
+    const n = nums.length;
+    return ((i + nums[i]) % n + n) % n;
+}
+```
+
+#### 🔑 Two Validity Guards
+Every time we advance a pointer, we must check **two conditions** before declaring a valid cycle:
+
+1. **Same direction**: `nums[current]` and `nums[next]` must have the same sign.
+   * Check: `nums[current] * nums[next] > 0` (product positive → same sign).
+2. **No self-loop**: The cycle must have length `> 1`.
+   * Check: `next != current`.
+
+If either guard fails for any step in a traversal, that path cannot contain a valid cycle.
+
+---
+
+#### Approach 1: Brute Force
+* **Intuition**: For every starting index `i`, simulate the traversal step by step. Track the sequence of visited indices in a dictionary (mapping index → step number). If we re-encounter an index we've seen **in this traversal** and all moves were in the same direction and the loop length > 1, we found a valid cycle.
+
+* **Algorithm**:
+  1. For each `i` from `0` to `n-1`:
+     - Initialise `visited = {i: 0}`, `curr = i`, `step = 1`.
+     - Follow the path: `next = get_next(curr)`.
+     - Check direction and self-loop guards.
+     - If `next` is already in `visited`, compute loop length: `step - visited[next]`. If `> 1`, return `True`.
+     - Otherwise, mark `visited[next] = step` and advance.
+     - If any guard fails, break and try the next starting index.
+  2. If no valid cycle found, return `False`.
+
+* **Python Implementation**:
+```python
+def circularArrayLoop_brute(nums: list[int]) -> bool:
+    n = len(nums)
+
+    def get_next(i: int) -> int:
+        return ((i + nums[i]) % n + n) % n
+
+    for i in range(n):
+        visited = {i: 0}
+        curr = i
+        step = 1
+
+        while True:
+            nxt = get_next(curr)
+
+            # Guard 1: Same direction
+            if nums[curr] * nums[nxt] < 0:
+                break
+
+            # Guard 2: No self-loop
+            if nxt == curr:
+                break
+
+            # Cycle detected in this traversal
+            if nxt in visited:
+                # Loop length must be > 1 (already guaranteed by self-loop check above)
+                return True
+
+            visited[nxt] = step
+            curr = nxt
+            step += 1
+
+    return False
+```
+
+* **JavaScript Implementation**:
+```javascript
+function circularArrayLoop_brute(nums) {
+    const n = nums.length;
+
+    function getNext(i) {
+        return ((i + nums[i]) % n + n) % n;
+    }
+
+    for (let i = 0; i < n; i++) {
+        const visited = new Map([[i, 0]]);
+        let curr = i;
+        let step = 1;
+
+        while (true) {
+            const nxt = getNext(curr);
+
+            // Guard 1: Same direction
+            if (nums[curr] * nums[nxt] < 0) break;
+
+            // Guard 2: No self-loop
+            if (nxt === curr) break;
+
+            // Cycle detected in this traversal
+            if (visited.has(nxt)) {
+                return true;
+            }
+
+            visited.set(nxt, step);
+            curr = nxt;
+            step++;
+        }
+    }
+
+    return false;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N^2)$ — for each of the $N$ starting indices, the traversal can visit up to $N$ nodes.
+  * **Space Complexity**: $O(N)$ — per-traversal visited dictionary.
+
+---
+
+#### Approach 2: Optimised Visited-Marking (In-place)
+* **Intuition**: Same logic as Approach 1, but after fully exploring a path from starting index `i` and determining it has no valid cycle, we **mark every node on that path with `0`** (a sentinel value impossible in valid inputs, since all `nums[i] != 0`). Future starting indices skip `0`-marked nodes immediately.
+
+  This avoids re-exploring the same dead-end paths, making the algorithm faster in practice — though the worst-case asymptotic complexity remains $O(N^2)$.
+
+* **Algorithm**:
+  1. For each `i` from `0` to `n-1`:
+     - If `nums[i] == 0`, skip (already processed).
+     - Simulate the traversal as in Approach 1.
+     - If a valid cycle is found, return `True`.
+     - Otherwise, retrace the path from `i` and set `nums[j] = 0` for all `j` on that path.
+  2. Return `False`.
+
+* **Python Implementation**:
+```python
+def circularArrayLoop_marking(nums: list[int]) -> bool:
+    n = len(nums)
+
+    def get_next(i: int) -> int:
+        return ((i + nums[i]) % n + n) % n
+
+    for i in range(n):
+        if nums[i] == 0:
+            continue
+
+        # Phase 1: Simulate traversal from i
+        curr = i
+        seen_in_traversal = {i}
+
+        while True:
+            nxt = get_next(curr)
+
+            # Guard 1: Same direction
+            if nums[curr] * nums[nxt] < 0:
+                break
+
+            # Guard 2: No self-loop
+            if nxt == curr:
+                break
+
+            # Cycle detected
+            if nxt in seen_in_traversal:
+                return True
+
+            seen_in_traversal.add(nxt)
+            curr = nxt
+
+        # Phase 2: Mark all nodes on this path as 0 (dead-end)
+        curr = i
+        sign = nums[i]
+        while nums[curr] * sign > 0:
+            nxt = get_next(curr)
+            nums[curr] = 0
+            curr = nxt
+
+    return False
+```
+
+* **JavaScript Implementation**:
+```javascript
+function circularArrayLoop_marking(nums) {
+    const n = nums.length;
+
+    function getNext(i) {
+        return ((i + nums[i]) % n + n) % n;
+    }
+
+    for (let i = 0; i < n; i++) {
+        if (nums[i] === 0) continue;
+
+        // Phase 1: Simulate traversal from i
+        let curr = i;
+        const seenInTraversal = new Set([i]);
+
+        while (true) {
+            const nxt = getNext(curr);
+
+            // Guard 1: Same direction
+            if (nums[curr] * nums[nxt] < 0) break;
+
+            // Guard 2: No self-loop
+            if (nxt === curr) break;
+
+            // Cycle detected
+            if (seenInTraversal.has(nxt)) {
+                return true;
+            }
+
+            seenInTraversal.add(nxt);
+            curr = nxt;
+        }
+
+        // Phase 2: Mark all nodes on this path as 0 (dead-end)
+        curr = i;
+        const sign = nums[i];
+        while (nums[curr] * sign > 0) {
+            const nxt = getNext(curr);
+            nums[curr] = 0;
+            curr = nxt;
+        }
+    }
+
+    return false;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N^2)$ worst case, but significantly faster in practice due to early termination via the `0`-marking.
+  * **Space Complexity**: $O(1)$ — marking is done in-place (modifies the input array). The per-traversal set is still $O(N)$ in this version; see Approach 3 for a true $O(1)$ space solution.
+
+---
+
+#### Approach 3: Fast & Slow Pointers (Optimal ✅)
+* **Intuition**: Instead of tracking visited nodes with a set, use the **Hare & Tortoise** algorithm to detect cycles directly within each traversal — giving us $O(1)$ auxiliary space.
+
+  * Treat the circular array as an implicit linked list where each element points to the next via `get_next`.
+  * Move `slow` one step and `fast` two steps per iteration.
+  * Apply both guards (same direction, no self-loop) at every step for **all pointers**.
+  * If `slow == fast`, a cycle of length > 1 has been detected.
+  * After each failed traversal, mark the path with `0` to skip it in future iterations (same dead-end optimisation as Approach 2).
+
+* **Algorithm**:
+  1. For each `i` where `nums[i] != 0`:
+     - Set `slow = fast = i`.
+     - Advance `slow` by 1 step and `fast` by 2 steps in each iteration.
+     - Before each advance, check the direction guard and self-loop guard for every next step.
+     - If the guard fails, break.
+     - If `slow == fast`, return `True`.
+  2. Mark the dead-end path starting from `i` with `0`.
+  3. Return `False`.
+
+* **Python Implementation**:
+```python
+def circularArrayLoop(nums: list[int]) -> bool:
+    n = len(nums)
+
+    def get_next(i: int) -> int:
+        return ((i + nums[i]) % n + n) % n
+
+    def is_valid_move(curr: int, nxt: int) -> bool:
+        # Guard 1: Same direction (same sign)
+        # Guard 2: No self-loop
+        return nums[curr] * nums[nxt] > 0 and nxt != curr
+
+    for i in range(n):
+        if nums[i] == 0:
+            continue
+
+        slow, fast = i, i
+
+        # Phase 1: Fast & Slow pointer cycle detection
+        while True:
+            slow_next = get_next(slow)
+            fast_next = get_next(fast)
+            fast_next_next = get_next(fast_next)
+
+            if not is_valid_move(slow, slow_next):
+                break
+            if not is_valid_move(fast, fast_next):
+                break
+            if not is_valid_move(fast_next, fast_next_next):
+                break
+
+            slow = slow_next
+            fast = fast_next_next
+
+            if slow == fast:
+                return True
+
+        # Phase 2: Mark the dead-end path with 0
+        curr = i
+        sign = nums[i]
+        while nums[curr] * sign > 0:
+            nxt = get_next(curr)
+            nums[curr] = 0
+            curr = nxt
+
+    return False
+```
+
+* **JavaScript Implementation**:
+```javascript
+function circularArrayLoop(nums) {
+    const n = nums.length;
+
+    function getNext(i) {
+        return ((i + nums[i]) % n + n) % n;
+    }
+
+    function isValidMove(curr, nxt) {
+        // Guard 1: Same direction (same sign)
+        // Guard 2: No self-loop
+        return nums[curr] * nums[nxt] > 0 && nxt !== curr;
+    }
+
+    for (let i = 0; i < n; i++) {
+        if (nums[i] === 0) continue;
+
+        let slow = i;
+        let fast = i;
+
+        // Phase 1: Fast & Slow pointer cycle detection
+        while (true) {
+            const slowNext = getNext(slow);
+            const fastNext = getNext(fast);
+            const fastNextNext = getNext(fastNext);
+
+            if (!isValidMove(slow, slowNext)) break;
+            if (!isValidMove(fast, fastNext)) break;
+            if (!isValidMove(fastNext, fastNextNext)) break;
+
+            slow = slowNext;
+            fast = fastNextNext;
+
+            if (slow === fast) {
+                return true;
+            }
+        }
+
+        // Phase 2: Mark the dead-end path with 0
+        let curr = i;
+        const sign = nums[i];
+        while (nums[curr] * sign > 0) {
+            const nxt = getNext(curr);
+            nums[curr] = 0;
+            curr = nxt;
+        }
+    }
+
+    return false;
+}
+```
+
+* **Complexity**:
+  * **Time Complexity**: $O(N)$ amortised — each node is visited at most twice (once in a traversal, once during marking). After marking, nodes are never revisited.
+  * **Space Complexity**: $O(1)$ — only pointer variables used; marking is done in-place. ✅
+
+---
+
+#### Dry Run: Approach 3 on `nums = [2, -1, 1, 2, 2]`
+* `n = 5`
+* `get_next(i)`: `[2, 4, 3, 0, 1]` → index 0 points to 2, index 2 points to 3, index 3 points to 0.
+
+**Starting at i = 0** (nums[0] = 2, positive direction):
+| Iteration | slow | fast | slow_next | fast_next_next | Valid? |
+|:---------:|:----:|:----:|:---------:|:--------------:|:------:|
+| Init      | 0    | 0    | —         | —              | —      |
+| 1         | 2    | 3    | get_next(0)=2, get_next(get_next(0))=3 | ✅ same dir |
+| 2         | 3    | 2    | get_next(2)=3, get_next(get_next(3))=2 | ✅ same dir |
+| 3         | 0    | 3    | get_next(3)=0, get_next(get_next(2))=3 | ✅ same dir |
+| 4         | 2    | 2    | slow == fast! | **CYCLE FOUND** ✅ |
+
+Return `true`. The cycle is `0 → 2 → 3 → 0`.
+
+---
+
+#### Comparison Table
+| Approach | Time | Space | Modifies Input? |
+|:---------|:----:|:-----:|:---------------:|
+| 1 — Brute Force | $O(N^2)$ | $O(N)$ | No |
+| 2 — Visited-Marking | $O(N^2)$ worst | $O(N)$ per traversal | Yes (marks 0) |
+| 3 — Fast & Slow (Optimal) | $O(N)$ amortised | $O(1)$ | Yes (marks 0) |
